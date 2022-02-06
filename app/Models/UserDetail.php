@@ -9,6 +9,10 @@ class UserDetail extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+    public $timestamps = false;
+
+
     public function country()
     {
         return $this->belongsTo(Country::class, 'citizenship_country_id');

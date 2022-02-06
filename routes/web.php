@@ -19,4 +19,5 @@ Route::get('/', function () {
 });
 
 Route::get('/users/active-austrians', [\App\Http\Controllers\UserController::class, 'getActiveAustrians']);
+Route::post('/users/{user}/edit-details', [\App\Http\Controllers\UserController::class, 'updateDetails']);
 

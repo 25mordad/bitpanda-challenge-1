@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Testing\Fluent\AssertableJson;
+use App\Models\Country;
 
 class UserTest extends TestCase
 {
@@ -26,8 +27,15 @@ class UserTest extends TestCase
             'country_iso3' => 'ESP'
         ];
         $response = $this->post("/users/$valid_user_id/edit-details", $details);
-        $response->assertStatus(200);
-        //TODO assert
+        $response->assertStatus(302);
+        $assertAttributes = [
+            'user_id' => $valid_user_id,
+            'citizenship_country_id' => Country::where('iso3', $details['country_iso3'])->first()->id,
+            'first_name' => $details['first_name'],
+            'last_name' => $details['last_name'],
+            'phone_number' => $details['phone_number']
+        ];
+        $this->assertDatabaseHas('user_details', $assertAttributes);
     }
 
     public function test_edit_details_for_invalid_user()
@@ -40,9 +48,7 @@ class UserTest extends TestCase
             'country_iso3' => 'ESP'
         ];
         $response = $this->post("/users/$invalid_user_id/edit-details", $details);
-        $response->assertStatus(200);
-        //TODO assert
-
+        $response->assertStatus(403);
     }
 
 
