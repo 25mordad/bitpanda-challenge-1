@@ -21,4 +21,11 @@ class User extends Authenticatable
     {
         return $query->where('active', 1);
     }
+
+    public function scopeWithCitizenship($query, $iso3)
+    {
+        return $query->whereHas('userDetail.country', function ($q) use ($iso3) {
+            $q->where('iso3', $iso3);
+        });
+    }
 }
