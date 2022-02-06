@@ -26,7 +26,7 @@ class UserTest extends TestCase
             'phone_number' => '003434343434',
             'country_iso3' => 'ESP'
         ];
-        $response = $this->post("/users/$valid_user_id/edit-details", $details);
+        $response = $this->put("/users/$valid_user_id/edit-details", $details);
         $response->assertStatus(302);
         $assertAttributes = [
             'user_id' => $valid_user_id,
@@ -47,9 +47,25 @@ class UserTest extends TestCase
             'phone_number' => '003434343434',
             'country_iso3' => 'ESP'
         ];
-        $response = $this->post("/users/$invalid_user_id/edit-details", $details);
+        $response = $this->put("/users/$invalid_user_id/edit-details", $details);
         $response->assertStatus(403);
     }
 
+    public function test_delete_a_valid_user()
+    {
+        // This test only works for first time!
+        //TODO Create a user by factory then delete it
+        $valid_user_id = 3;
+        $response = $this->delete("/users/$valid_user_id");
+        $response->assertStatus(302);
+        $this->assertDatabaseMissing('users', ['id' => $valid_user_id]);
+    }
+
+    public function test_delete_an_invalid_user()
+    {
+        $invalid_user_id = 7;
+        $response = $this->delete("/users/$invalid_user_id");
+        $response->assertStatus(403);
+    }
 
 }
